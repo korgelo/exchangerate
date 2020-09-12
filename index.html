@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<style>
+h1{
+  color: green;
+  font-style: italic;
+  font-size: 40px;
+}
+.select{
+  font-size: 20px;
+}
+</style>
+
+<body>
+
+<script>
+var xmlhttp, myObj, x, txt = "";
+xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    myObj = JSON.parse(this.responseText);
+
+    for (x in myObj.data.rates) {
+       document.getElementById("optselect1").innerHTML += "<option>" + x;
+    }
+  }
+}; 
+xmlhttp.open("GET", "https://api.coinbase.com/v2/exchange-rates?currency=USD", true); 
+xmlhttp.send();
+</script>
+<!-- Exchange Rate 1-->
+<script>
+function showCrypto1(str1) {
+var xmlhttp, myObj, x, txt = "";
+  if (str1 == "") {return;}
+xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    myObj = JSON.parse(this.responseText);
+    cryptoname = Object.values(myObj.data.rates);
+    base(cryptoname);
+    for (x in myObj.data.rates){
+      txt += "<tr><td>"+x+"<td>"+myObj.data.rates[x]+"<td>"+"</td></tr>";
+    }
+    document.getElementById("Crypto").innerHTML = txt;
+    /*console.log(Object.values(myObj));*/
+  }
+};
+xmlhttp.open("GET", "https://api.coinbase.com/v2/exchange-rates?currency="+ str1, true);
+xmlhttp.send();
+}
+</script>
+<!-- Exchange Rate 2-->
+<script>
+function base(byusd) {
+var xmlhttp, myObj, x, txt = "";
+xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    myObj = JSON.parse(this.responseText);
+    qwer  = Object.values(myObj.data.rates);
+    keyss  = Object.keys(myObj.data.rates);
+    const usdx = {qwer,byusd,keyss};
+    console.log()
+
+    for (x in usdx.qwer){
+      txt += "<tr><td>"+usdx.keyss[x]+"<td>"+usdx.byusd[x]/usdx.qwer[x]+"</td></tr>";
+      
+    }
+
+    document.getElementById("exchange2").innerHTML = txt;
+    }
+}; 
+xmlhttp.open("GET", "https://api.coinbase.com/v2/exchange-rates?currency=USD", true); 
+xmlhttp.send();
+}
+</script>
+
+<!-- |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| -->
+
+<div class="container">
+<div class="row">
+<div class="col-6">
+<br><br><br>
+
+<div class="d-flex justify-content-center">
+<h1>EXCHANGE RATE :</h1>
+<select class="select" id="optselect1" onchange="showCrypto1(this.value)"></select>
+</div>
+<table  id="myTable1" class="table">
+  <thead>
+    <tr>
+      <th>
+      <button onclick="sortCrypto1(0)">CRYPTO ↑↓</button>
+      </th>
+      <th><button onclick="sortExchange1(1)">YOU RECEIVED ↓</button></th>
+    </tr>
+  </thead>
+
+<thead id="Crypto"></thead>
+</table>
+
+</div>
+
+<div class="col-6">
+<br><br><br>
+
+<h1 class="d-flex justify-content-center">EXCHANGE PRICE IN USD:
+</h1>
+<table id="myTable2" class="table">
+  <thead>
+    <tr>  
+      <th><button onclick="sortCrypto2(0)">CRYPTO ↑↓</button></th>
+      <th><button onclick="sortExchange2(1)">PRICE IN USD↓</button></th>
+    </tr>
+  </thead>
+<thead id="exchange2"></thead>
+</table>
+</div>
+
+</div>
+</div>
+
+<!-- |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| -->
+
+<!-- Table Filter -->
+<script>
+function sortCrypto1(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("myTable1");
+  switching = true;
+  dir = "asc"; 
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          shouldSwitch= true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      switchcount ++;      
+    } else {
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
+<!-- Table Filter -->
+<script>
+function sortCrypto2(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("myTable2");
+  switching = true;
+  dir = "asc"; 
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          shouldSwitch= true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      switchcount ++;      
+    } else {
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
+<!-- Table Filter By Numeric-->
+<script>
+function sortExchange1(n) {
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("myTable1");
+  switching = true;
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      if (Number(x.innerHTML) < Number(y.innerHTML)) {
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}
+</script>
+<!-- Table Filter By Numeric-->
+<script>
+function sortExchange2(n) {
+  var table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementById("myTable2");
+  switching = true;
+  while (switching) {
+    switching = false;
+    rows = table.rows;
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      if (Number(x.innerHTML) < Number(y.innerHTML)) {
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
+}
+</script>
+</body>
+</html>
