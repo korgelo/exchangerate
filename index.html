@@ -17,8 +17,10 @@ h1{
 </style>
 
 <body>
-
 <script>
+
+
+
 var xmlhttp, myObj, x, txt = "";
 xmlhttp = new XMLHttpRequest();
 xmlhttp.onreadystatechange = function() {
@@ -32,66 +34,79 @@ xmlhttp.onreadystatechange = function() {
 }; 
 xmlhttp.open("GET", "https://api.coinbase.com/v2/exchange-rates?currency=USD", true); 
 xmlhttp.send();
-</script>
-<!-- Exchange Rate 1-->
-<script>
-function showCrypto1(str1) {
+
+
+
+
+function showCrypto1(str1){
+if (str1 == "") {return;}
 var xmlhttp, myObj, x, txt = "";
-  if (str1 == "") {return;}
 xmlhttp = new XMLHttpRequest();
-xmlhttp.onreadystatechange = function() {
-  if (this.readyState == 4 && this.status == 200) {
+xmlhttp.onreadystatechange = function(){ 
+  if (this.readyState == 4 && this.status == 200){ 
+    inputval=document.getElementById("inbal").value; 
     myObj = JSON.parse(this.responseText);
     cryptoname = Object.values(myObj.data.rates);
     base(cryptoname);
     for (x in myObj.data.rates){
-      txt += "<tr><td>"+x+"<td>"+myObj.data.rates[x]+"<td>"+"</td></tr>";
+      
+      txt+="<tr><td>"+x+"<td>"+myObj.data.rates[x]*inputval+"<td>"+"</td></tr>"; 
+    
     }
-    document.getElementById("Crypto").innerHTML = txt;
-    /*console.log(Object.values(myObj));*/
-  }
+    document.getElementById("Crypto").innerHTML=txt;
+    }
 };
 xmlhttp.open("GET", "https://api.coinbase.com/v2/exchange-rates?currency="+ str1, true);
 xmlhttp.send();
+clkmulexrate();
 }
-</script>
-<!-- Exchange Rate 2-->
-<script>
+
+
+
+
 function base(byusd) {
 var xmlhttp, myObj, x, txt = "";
 xmlhttp = new XMLHttpRequest();
 xmlhttp.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200) {
+    inputval=document.getElementById("inbal").value; 
     myObj = JSON.parse(this.responseText);
     qwer  = Object.values(myObj.data.rates);
     keyss  = Object.keys(myObj.data.rates);
     const usdx = {qwer,byusd,keyss};
     console.log()
-
     for (x in usdx.qwer){
-      txt += "<tr><td>"+usdx.keyss[x]+"<td>"+usdx.byusd[x]/usdx.qwer[x]+"</td></tr>";
-      
+      txt += "<tr><td>"+usdx.keyss[x]+"<td>"+(usdx.byusd[x]/usdx.qwer[x])*inputval+"</td></tr>";
     }
-
     document.getElementById("exchange2").innerHTML = txt;
     }
 }; 
 xmlhttp.open("GET", "https://api.coinbase.com/v2/exchange-rates?currency=USD", true); 
 xmlhttp.send();
 }
-</script>
 
+</script>
 <!-- |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| -->
 
 <div class="container">
+
+<nav class="navbar navbar-light bg-light">
+<div class="input-group mb-3 d-flex justify-content-center input-group-lg">
+<label class="input-group-text" for="optselect1">Your Holding Crypto:</label>
+<select class="custom-select select" id="optselect1" onchange="showCrypto1(this.value)">
+  <option selected>Choose...</option>
+</select>
+<input type="number" id="inbal" class="form-control" placeholder="Initial Balance" >
+<button class="btn btn-outline-secondary" onclick="showCrypto1(optselect1.value)" type="button" id="">Button</button>
+</div>
+</nav>
+
 <div class="row">
 <div class="col-6">
-<br><br><br>
-
 <div class="d-flex justify-content-center">
-<h1>EXCHANGE RATE :</h1>
-<select class="select" id="optselect1" onchange="showCrypto1(this.value)"></select>
+  <h1>EXCHANGE RATE :</h1>
 </div>
+
 <table  id="myTable1" class="table">
   <thead>
     <tr>
@@ -108,8 +123,6 @@ xmlhttp.send();
 </div>
 
 <div class="col-6">
-<br><br><br>
-
 <h1 class="d-flex justify-content-center">EXCHANGE PRICE IN USD:
 </h1>
 <table id="myTable2" class="table">
